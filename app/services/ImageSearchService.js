@@ -1,8 +1,10 @@
 'use strict';
 
 
+
 function ImageSearchService () {
 
+    var imageSearch = require('image-search');
 
     this.search = function (req, res) {
         var images = [{
@@ -10,7 +12,12 @@ function ImageSearchService () {
             "snippet":"funny-pictures-cat-breaks-",
             "thumbnail":"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT3LYyfkNxQWcG6wmB6M2FgUZpMXbjxXhc-g4CJ18luXAvDBdBNrzXAZQ8",
             "context":"http://vi.sualize.us/icanhascheezburger_files_wordpress_2008_06_funny_pictures_hug_moment_forever_love_lolcats_picture_n2v.html"
-        }]
+        }];
+
+
+        imageSearch.google('cats', function(err, images) {
+            console.log(JSON.stringify(images));
+        });
 
         res.json(images);
     };
