@@ -12,7 +12,8 @@
     "Express",
     "Node",
     "javascript",
-    "FreeCodeCamp"
+    "FreeCodeCamp",
+    "MongoDB"
   ],
   "scripts": {
     "start": "node server.js"
@@ -22,6 +23,7 @@
   "dependencies": {
     "dotenv": "^1.2.0",
     "express": "^4.12.4",
+    "mongoose": "^4.5.0",
     "request": "^2.72.0"
   }
 }

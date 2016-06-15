@@ -2,6 +2,9 @@
 
 var request = require('request');
 
+var path = process.cwd();
+var SearchEvent = require(path + '/app/models/SearchEvent.js');
+
 function ImageSearchService() {
 
 
@@ -15,18 +18,20 @@ function ImageSearchService() {
             host: 'googleapis.com',
             port: 443,
             method: 'GET',
-            path: '/customsearch/v1?searchType=image&cx=' +  cx +'&key=' + key +'&q=' + query
+            path: '/customsearch/v1?searchType=image&cx=' + cx + '&key=' + key + '&q=' + query
         };
 
         console.log(JSON.stringify(options));
 
-        var qs = {cx: cx,
-        key: key,
-        q: query};
-        var name = {url:'https://www.googleapis.com:443/customsearch/v1', qs: qs, json:true};
+        var qs = {
+            cx: cx,
+            key: key,
+            q: query
+        };
+        var name = {url: 'https://www.googleapis.com:443/customsearch/v1', qs: qs, json: true};
         request.get(name, function (e, r) {
-            console.log('e:' +  JSON.stringify(e));
-            console.log('r:' +  JSON.stringify(r));
+            console.log('e:' + JSON.stringify(e));
+            console.log('r:' + JSON.stringify(r));
 
             //var images = [{
             //    "url": "http://cdnstatic.visualizeus.com/thumbs/36/0b/funny,lolcat,cats,cat,lolcats,humor-360ba427d350494fb4e69b209a93a814_h.jpg",
@@ -37,9 +42,18 @@ function ImageSearchService() {
 
             return res.json(r.body.items);
 
-        })
+        });
 
-    };
+        var searchEvent = new SearchEvent({
+            term: query,
+            when: Date.now()
+        });
+        searchEvent.save(function (err, searchEvent) {
+            if (err) {
+                console.log(err + ', searchEvent:' + JSON.stringify(searchEvent));
+            }
+        });
+    }
 
 }
 
