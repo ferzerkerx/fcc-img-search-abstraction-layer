@@ -8,7 +8,7 @@ var SearchEvent = require(path + '/app/models/SearchEvent.js');
 function ImageSearchService() {
 
 
-    this.search = function (req, res) {
+    this.searchQuery = function (req, res) {
 
         var query = req.params.query;
         var cx = process.env.GOOGLE_CX;
@@ -53,8 +53,22 @@ function ImageSearchService() {
                 console.log(err + ', searchEvent:' + JSON.stringify(searchEvent));
             }
         });
-    }
+    };
 
+    this.searchHistory =  function(req, res) {
+        var query = SearchEvent.find().limit(20);
+        query.exec(function(err, searchEvents) {
+            if (err) {
+                return res.json(500, {
+                    message: 'Error',
+                    error: err
+                });
+            }
+            return res.json(searchEvents.map(function(e) {
+                return {term: e.term, when: e.when};
+            }));
+        });
+    };
 }
 
 module.exports = ImageSearchService;
