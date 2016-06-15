@@ -33,15 +33,25 @@ function ImageSearchService() {
             console.log('e:' + JSON.stringify(e));
             console.log('r:' + JSON.stringify(r));
 
-            //var images = [{
-            //    "url": "http://cdnstatic.visualizeus.com/thumbs/36/0b/funny,lolcat,cats,cat,lolcats,humor-360ba427d350494fb4e69b209a93a814_h.jpg",
-            //    "snippet": "funny-pictures-cat-breaks-",
-            //    "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT3LYyfkNxQWcG6wmB6M2FgUZpMXbjxXhc-g4CJ18luXAvDBdBNrzXAZQ8",
-            //    "context": "http://vi.sualize.us/icanhascheezburger_files_wordpress_2008_06_funny_pictures_hug_moment_forever_love_lolcats_picture_n2v.html"
-            //}];
+            var images = [];
+            var items = r.body.items;
+            if(items) {
+                images = items.map(function(e) {
+                    console.log(JSON.stringify(e));
+                    var thumbnail = e.pagemap.cse_thumbnail;
+                    if (!thumbnail) {
+                        thumbnail = e.pagemap.imageobject.url;
+                    }
+                   return {
+                       url: e.url,
+                       snippet: e.snippet,
+                       thumbnail: thumbnail,
+                       context: e.link
+                   }
+                });
+            }
 
-            return res.json(r.body.items);
-
+            return res.json(images);
         });
 
         var searchEvent = new SearchEvent({
@@ -55,6 +65,7 @@ function ImageSearchService() {
         });
     };
 
+
     this.searchHistory =  function(req, res) {
         var query = SearchEvent.find().limit(20);
         query.exec(function(err, searchEvents) {
@@ -64,9 +75,10 @@ function ImageSearchService() {
                     error: err
                 });
             }
-            return res.json(searchEvents.map(function(e) {
+            var filteredSearchEvents = searchEvents.map(function(e) {
                 return {term: e.term, when: e.when};
-            }));
+            });
+            return res.json(filteredSearchEvents);
         });
     };
 }
