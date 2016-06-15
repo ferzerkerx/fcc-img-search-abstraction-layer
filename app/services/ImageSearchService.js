@@ -14,20 +14,20 @@ function ImageSearchService() {
         var cx = process.env.GOOGLE_CX;
         var key = process.env.GOOGLE_API_KEY;
 
-        var options = {
-            host: 'googleapis.com',
-            port: 443,
-            method: 'GET',
-            path: '/customsearch/v1?searchType=image&cx=' + cx + '&key=' + key + '&q=' + query
-        };
-
-        console.log(JSON.stringify(options));
+        var offset = req.query.offset;
+        var resultsPerPage = 10;
 
         var qs = {
             cx: cx,
             key: key,
-            q: query
+            q: query,
+            num: resultsPerPage
         };
+        if (offset && offset > 0) {
+            qs.start = offset*resultsPerPage + 1;
+        }
+        console.log('###:' + JSON.stringify(qs));
+
         var name = {url: 'https://www.googleapis.com:443/customsearch/v1', qs: qs, json: true};
         request.get(name, function (e, r) {
             console.log('e:' + JSON.stringify(e));
