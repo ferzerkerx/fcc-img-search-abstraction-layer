@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var routes = require('./app/routes/api.js');
 
 var app = express();
-require('dotenv').load();
+require('dotenv').config();
 
 mongoose.connect(process.env.MONGO_URI);
 
